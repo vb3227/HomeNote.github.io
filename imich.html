@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reread – Steampunk Polished</title>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0c07;
+      --bg2: #17110b;
+      --paper: #fbf6ea;
+      --paper-2: #f2e8d5;
+      --brass: #b88743;
+      --copper: #a2632e;
+      --ink: #24170e;
+      --ink-soft: #3a2618;
+      --text-on-dark: #efe9df;
+      --shadow: rgba(0,0,0,.25);
+      --accent: #e1a852;
+      --accent-dark: #5a3a1e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      background: radial-gradient(1000px 500px at 10% 0%, #1e140c 0%, transparent 60%),
+                  radial-gradient(900px 600px at 90% 20%, #20160d 0%, transparent 60%),
+                  linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+      color: var(--text-on-dark);
+      font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    }
+
+    a { color: var(--accent); text-decoration: none; font-weight: 700; }
+    a:hover { text-decoration: underline; }
+
+    /* Frame */
+    .frame {
+      max-width: 1040px; margin: 2.2rem auto; padding: 2.2rem 2.4rem;
+      background: linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+      color: var(--ink); border-radius: 18px; position: relative; isolation: isolate;
+      box-shadow: 0 20px 50px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.6);
+    }
+    .frame::before { content:""; position:absolute; inset:-14px; border-radius: 22px;
+      background: linear-gradient(140deg, #7d5b2f 0%, #c08a45 35%, #ffd098 50%, #8a5a2b 70%, #6e4b24 100%);
+      filter: saturate(.9) brightness(.95); z-index:-1; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+    }
+
+    header { text-align: center; position: relative; }
+    header h1 { font-family:'Cinzel', serif; font-weight:700; letter-spacing:.02em; font-size: clamp(2rem, 1.6rem + 2vw, 3.2rem); color: var(--ink); text-shadow: 0 1px 0 #fff; }
+    header h1 .badge { font-size:.85em; opacity:.85; color: var(--accent-dark); }
+
+    .gearwrap { position:absolute; inset:0; pointer-events:none; }
+    .gear { position:absolute; opacity:.18; filter: drop-shadow(0 4px 8px rgba(0,0,0,.25)); color:#b27a3b; }
+    .gear.g1 { left:-10px; top:-20px; width:70px; animation: spin 14s linear infinite; }
+    .gear.g2 { right:-10px; top:-10px; width:90px; animation: spin-rev 16s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin-rev { to { transform: rotate(-360deg); } }
+
+    nav { margin: 1rem 0 1.1rem; }
+    nav ul { list-style:none; display:flex; justify-content:center; flex-wrap:wrap; gap:.6rem; }
+    nav a { display:inline-flex; align-items:center; gap:.5rem; padding:.56rem 1rem; border:1px solid rgba(0,0,0,.08); background:#fffaf0; color:#362313; font-weight:800; border-radius:999px; box-shadow: 0 2px 6px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,.9); }
+
+    section { margin: 2.2rem 0; }
+    h2 { font-family:'Cinzel', serif; color: var(--ink); text-align:center; font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2rem); margin-bottom:.9rem; text-shadow: 0 1px 0 rgba(255,255,255,.65); }
+    p, ul, ol, dl { margin-bottom: 1rem; color: var(--ink-soft); }
+    ul, ol { padding-left: 1.2rem; }
+
+    .btn { display:inline-block; background: linear-gradient(180deg, #c8893f 0%, #9e642e 100%); color:#fff; padding:.7rem 1.25rem; border-radius:12px; font-weight:800; letter-spacing:.02em; border:1px solid rgba(0,0,0,.22); box-shadow: 0 10px 22px rgba(156,92,45,.25); }
+
+    .info-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1rem; }
+    .card { background:#fffef9; border:1px solid rgba(0,0,0,.08); border-left:6px solid var(--copper); border-radius:14px; padding:1rem 1.2rem; position:relative; overflow:hidden; color:var(--ink); box-shadow: 0 8px 18px rgba(0,0,0,.06); }
+    .card h3 { margin-bottom:.45rem; font-size:1.14rem; color:#3b230f; display:inline-flex; gap:.4rem; align-items:center; }
+    .card h3::before { content:""; width:16px; height:16px; display:inline-block; background: radial-gradient(circle at 50% 50%, #b27a3b 0 40%, transparent 41%), conic-gradient(from 0deg, #b27a3b 0 10%, transparent 10% 20%, #b27a3b 20% 30%, transparent 30% 40%, #b27a3b 40% 50%, transparent 50% 60%, #b27a3b 60% 70%, transparent 70% 80%, #b27a3b 80% 90%, transparent 90%); border-radius:50%; animation: spin 3.6s linear infinite; }
+
+    .alt { background:#f6ecd8; padding:1rem 1.2rem; border-left:6px solid var(--brass); border-radius:14px; color:var(--ink); }
+
+    .faq dt { font-weight:800; margin-top:.9rem; color:#3d2616; }
+    .faq dd { margin:.35rem 0 0 .8rem; color:var(--ink-soft); }
+
+    /* 3D stage – transparent so it blends with parchment */
+    #model-container { width:100%; height:460px; margin:1.2rem auto 0; border-radius:16px; overflow:hidden; background: transparent; border:1px dashed rgba(0,0,0,.08); position:relative; }
+    #hint { position:absolute; bottom:12px; right:14px; font-size:.85rem; color:#775731; background:#fff6e5; border:1px solid rgba(0,0,0,.08); padding:.35rem .55rem; border-radius:10px; box-shadow: 0 4px 10px rgba(0,0,0,.06); }
+
+    .scroll-gear { position:relative; display:block; width:42px; height:42px; margin:.9rem auto 0; color:#b27a3b; opacity:.95; animation: spin 6s linear infinite, bob 2.2s ease-in-out infinite; }
+    @keyframes bob { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(4px); } }
+
+    footer p { font-size:.95rem; color:#3f2c1b; text-align:center; }
+
+    @media (prefers-reduced-motion: reduce) { *{ animation:none!important; transition:none!important; } }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <header>
+      <div class="gearwrap" aria-hidden="true">
+        <svg class="gear g1" viewBox="0 0 100 100" width="70" height="70"><path fill="currentColor" d="M50 30a20 20 0 1 0 0 40 20 20 0 0 0 0-40zm0-28 6 8a40 40 0 0 1 8 0l6-8 12 7-3 9a40 40 0 0 1 6 6l9-3 7 12-8 6a40 40 0 0 1 0 8l8 6-7 12-9-3a40 40 0 0 1-6 6l3 9-12 7-6-8a40 40 0 0 1-8 0l-6 8-12-7 3-9a40 40 0 0 1-6-6l-9 3-7-12 8-6a40 40 0 0 1 0-8l-8-6 7-12 9 3a40 40 0 0 1 6-6l-3-9z"/></svg>
+        <svg class="gear g2" viewBox="0 0 100 100" width="90" height="90"><path fill="currentColor" d="M50 28a22 22 0 1 0 0 44 22 22 0 0 0 0-44zm0-26 5 7a42 42 0 0 1 10 0l5-7 12 6-2 8a42 42 0 0 1 7 7l8-2 6 12-7 5a42 42 0 0 1 0 10l7 5-6 12-8-2a42 42 0 0 1-7 7l2 8-12 6-5-7a42 42 0 0 1-10 0l-5 7-12-6 2-8a42 42 0 0 1-7-7l-8 2-6-12 7-5a42 42 0 0 1 0-10l-7-5 6-12 8 2a42 42 0 0 1 7-7l-2-8z"/></svg>
+      </div>
+      <h1>📚 Reread <span class="badge">· A Steampunk Edition</span></h1>
+      <nav>
+        <ul>
+          <li><a href="#about">Home</a></li>
+          <li><a href="#why">Why Donate</a></li>
+          <li><a href="#benefits">Benefits</a></li>
+          <li><a href="#prepare">Prepare</a></li>
+          <li><a href="#steps">Steps</a></li>
+          <li><a href="#platforms">Platforms</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section id="about">
+      <h2>Why Donating Books Matters</h2>
+      <p>Passing on your gently loved books brings fresh stories to new readers. It fuels imagination, supports education, and strengthens communities worldwide.</p>
+      <div id="model-container"><div id="hint">drag to rotate · click to open</div></div>
+      <a class="scroll-gear" href="#why" aria-label="Scroll down">
+        <svg viewBox="0 0 100 100"><path fill="currentColor" d="M50 30a20 20 0 1 0 0 40 20 20 0 0 0 0-40zm0-28 6 8a40 40 0 0 1 8 0l6-8 12 7-3 9a40 40 0 0 1 6 6l9-3 7 12-8 6a40 40 0 0 1 0 8l8 6-7 12-9-3a40 40 0 0 1-6 6l3 9-12 7-6-8a40 40 0 0 1-8 0l-6 8-12-7 3-9a40 40 0 0 1-6-6l-9 3-7-12 8-6a40 40 0 0 1 0-8l-8-6 7-12 9 3a40 40 0 0 1 6-6l-3-9z"/></svg>
+      </a>
+    </section>
+
+    <section id="why" class="alt reveal"><h2>Why Donate Your Books?</h2>
+      <div class="info-grid">
+        <div class="card"><h3>Equal Access</h3><p>Libraries free readers from cost barriers, offering knowledge to all. Your donations increase title variety and reduce waitlists for popular genres.</p></div>
+        <div class="card"><h3>Boost Literacy</h3><p>Donations enrich school and adult programs, enable reading circles, and help learners switch from screens to pages for deeper focus.</p></div>
+        <div class="card"><h3>Sustainable</h3><p>Re‑circulate books and reduce the environmental impact of new printing. One donated book can be read dozens of times, multiplying its footprint savings.</p></div>
+        <div class="card"><h3>Cultural Exchange</h3><p>Share diverse voices and perspectives across communities. Translated works and local authors often become hidden gems for new readers.</p></div>
+      </div>
+    </section>
+
+    <section id="impact" class="reveal"><h2>Impact Stories</h2>
+      <p>In neighborhood drives, donated picture books have stocked pop‑up libraries in parks, letting families read together after school. Adult literacy programs use donated memoirs and short story collections to encourage discussion and confidence. Your shelf can seed a reading habit that lasts a lifetime.</p>
+    </section>
+
+    <section id="benefits" class="reveal"><h2>Benefits of Donating</h2>
+      <ul>
+        <li><strong>Tax Receipt:</strong> Get an official acknowledgment for deductions.</li>
+        <li><strong>Declutter:</strong> Clear your shelves for fresh finds.</li>
+        <li><strong>Community:</strong> Strengthen local programs and events.</li>
+        <li><strong>Fulfillment:</strong> Feel the joy of giving back.</li>
+      </ul>
+    </section>
+
+    <section id="prepare" class="alt reveal"><h2>Preparing Your Books</h2>
+      <ul>
+        <li>Ensure covers and pages are clean, no severe damage.</li>
+        <li>Remove personal notes, bookmarks, or sticky tabs.</li>
+        <li>Sort by genre or reader age for quick library processing.</li>
+        <li>Pack in sturdy boxes or reusable totes.</li>
+        <li>Label contents to assist library volunteers.</li>
+      </ul>
+    </section>
+
+    <section id="steps" class="reveal"><h2>How Your Donation Travels</h2>
+      <ol>
+        <li><strong>Check Guidelines:</strong> Confirm accepted items and drop‑off times.</li>
+        <li><strong>Intake:</strong> Volunteers inspect, sort, and log donations.</li>
+        <li><strong>Shelving/Distribution:</strong> Books go to branches, partner schools, or pop‑ups.</li>
+        <li><strong>Readers:</strong> Your books are borrowed, discussed, and loved again.</li>
+      </ol>
+    </section>
+
+    <section id="platforms" class="alt reveal"><h2>Online Donation Platforms</h2>
+      <p>Ship directly to reputable organizations:</p>
+      <ul>
+        <li><a href="https://www.bookmooch.com" target="_blank" rel="noreferrer noopener">BookMooch</a> – Exchange books worldwide.</li>
+        <li><a href="https://www.betterworldbooks.com" target="_blank" rel="noreferrer noopener">Better World Books</a> – Funds literacy projects.</li>
+        <li><a href="https://www.thriftbooks.com/donations/" target="_blank" rel="noreferrer noopener">ThriftBooks</a> – Get store credit.</li>
+        <li><a href="https://www.goodwill.org/donate/donate-stuff/textbooks/" target="_blank" rel="noreferrer noopener">Goodwill</a> – Local drop‑off & tax benefit.</li>
+        <li><a href="https://bookcrossing.com" target="_blank" rel="noreferrer noopener">BookCrossing</a> – Release books into the wild.</li>
+      </ul>
+    </section>
+
+    <section id="faq" class="reveal"><h2>Frequently Asked Questions</h2>
+      <dl class="faq">
+        <dt>Can I donate old textbooks?</dt>
+        <dd>Yes—most libraries accept academic texts in good condition.</dd>
+        <dt>Do I need an appointment?</dt>
+        <dd>Some branches allow walk‑ins; check online or call ahead.</dd>
+        <dt>Are magazines accepted?</dt>
+        <dd>Current issues often yes; older editions vary by library.</dd>
+        <dt>Can I donate internationally?</dt>
+        <dd>Platforms like BookMooch and Better World Books accept global shipments.</dd>
+      </dl>
+    </section>
+
+    <footer><p>Informational guide only. © 2025 Reread.</p></footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('model-container');
+      const hint = document.getElementById('hint');
+      function getSize(){
+        const w = Math.max(360, container.clientWidth || (container.parentElement && container.parentElement.clientWidth) || 720);
+        const h = Math.max(300, container.clientHeight || 460);
+        return { w, h };
+      }
+      const { w: startW, h: startH } = getSize();
+
+      // Scene (transparent) so it blends with parchment
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, startW / startH, 0.1, 100);
+      camera.position.set(0.6, 0.35, 3.6);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.setClearAlpha(0);
+      renderer.setSize(startW, startH, false);
+      container.appendChild(renderer.domElement);
+      try { renderer.getContext(); } catch(e) { container.innerHTML = '<p style="color:#333;padding:1rem">WebGL not available.</p>'; return; }
+
+      // Lights
+      const hemi = new THREE.HemisphereLight(0xfff8e0, 0x1c1209, 0.7); scene.add(hemi);
+      const key = new THREE.DirectionalLight(0xfff3c6, 1.15); key.position.set(2.6, 3.6, 4.5); scene.add(key);
+      const rim = new THREE.SpotLight(0xffd08a, 0.65, 10, Math.PI/6, .35, 1); rim.position.set(-3, 2.5, -2); scene.add(rim);
+
+      // Materials
+      const brass = new THREE.MeshStandardMaterial({ color: 0xb27a3b, metalness: 0.85, roughness: 0.35 });
+      const copper = new THREE.MeshStandardMaterial({ color: 0x9c5c2d, metalness: 0.8, roughness: 0.45 });
+      const leather = new THREE.MeshStandardMaterial({ color: 0x5a3a1e, metalness: 0.15, roughness: 0.85 });
+      const pagesMat = new THREE.MeshStandardMaterial({ color: 0xefe7d6, metalness: 0.05, roughness: 0.88 });
+
+      // Detailed Book (single model)
+      const book = new THREE.Group();
+      const coverGeo = new THREE.BoxGeometry(1.3, 1.7, 0.06);
+      const frontCover = new THREE.Mesh(coverGeo, leather); frontCover.position.z = 0.06;
+      const backCover  = new THREE.Mesh(coverGeo, leather); backCover.position.z = -0.06;
+      const pagesGeo = new THREE.BoxGeometry(1.24, 1.62, 0.12);
+      const pages = new THREE.Mesh(pagesGeo, pagesMat);
+      const spineGeo = new THREE.BoxGeometry(0.1, 1.7, 0.12);
+      const spine = new THREE.Mesh(spineGeo, copper);
+
+      // Decorative strap & buckle
+      const strap = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.08, 0.04), leather); strap.position.set(0, 0.2, 0.08);
+      const buckle = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.012, 12, 24), brass); buckle.position.set(0.5, 0.2, 0.1); buckle.rotation.x = Math.PI/2;
+
+      // Corner protectors
+      const cornerGeo = new THREE.BoxGeometry(0.28, 0.02, 0.28);
+      const makeCorner = (x,y,z)=>{ const c = new THREE.Mesh(cornerGeo, brass); c.position.set(x,y,z); return c; };
+
+      // Gear emboss on cover
+      function makeGear(radius=0.22, tooth=12, thickness=0.02) {
+        const group = new THREE.Group();
+        const hub = new THREE.CylinderGeometry(radius*0.45, radius*0.45, thickness, 24);
+        const hubMesh = new THREE.Mesh(hub, brass); hubMesh.rotation.x = Math.PI/2; group.add(hubMesh);
+        const toothGeo = new THREE.BoxGeometry(thickness*0.9, radius*0.25, radius*0.15);
+        for (let t=0; t<tooth; t++){
+          const m = new THREE.Mesh(toothGeo, brass);
+          const a = (t/tooth) * Math.PI * 2; m.position.set(Math.cos(a)*radius, 0, Math.sin(a)*radius); m.rotation.y = a; m.rotation.z = Math.PI/2; group.add(m);
+        }
+        return group;
+      }
+      const emboss = makeGear(0.25, 14, 0.02); emboss.position.set(0.45, -0.35, 0.091);
+
+      // Page edge lines (faux sheets)
+      const pageLines = new THREE.Group();
+      for (let i=0; i<12; i++){
+        const line = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.002, 0.122), new THREE.MeshStandardMaterial({ color: 0xe6dcc7, metalness:0, roughness: 1 }));
+        line.position.set(0, 0.73 - i*0.13, 0);
+        pageLines.add(line);
+      }
+      pages.add(pageLines);
+
+      // Steam dust (subtle, golden)
+      const dustCount = 90; const dustGeo = new THREE.BufferGeometry();
+      const dpos = new Float32Array(dustCount*3), dcol = new Float32Array(dustCount*3);
+      for (let i=0;i<dustCount;i++){ dpos[i*3]=THREE.MathUtils.randFloatSpread(1.8); dpos[i*3+1]=THREE.MathUtils.randFloatSpread(1.2); dpos[i*3+2]=THREE.MathUtils.randFloatSpread(1.2); dcol[i*3]=1; dcol[i*3+1]=0.85; dcol[i*3+2]=0.6; }
+      dustGeo.setAttribute('position', new THREE.BufferAttribute(dpos,3));
+      dustGeo.setAttribute('color', new THREE.BufferAttribute(dcol,3));
+      const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ size:0.02, vertexColors:true, transparent:true, opacity:0.6, depthWrite:false }));
+
+      book.add(frontCover, backCover, pages, spine, strap, buckle, emboss,
+        makeCorner(-0.55, 0.83, 0.13),
+        makeCorner( 0.55, 0.83, 0.13),
+        makeCorner(-0.55,-0.83, 0.13),
+        makeCorner( 0.55,-0.83, 0.13)
+      );
+      book.rotation.x = -0.2; book.rotation.y = 0.35; scene.add(book); scene.add(dust);
+
+      // ---------- Interactions ----------
+      let isOpen = false; let drag = false; let prev = {x:0,y:0};
+      function openBook(){
+        if (isOpen) return;
+        isOpen = true;
+        anime({ targets: frontCover.rotation, y: Math.PI*0.95, duration: 900, easing: 'easeInOutQuad' });
+        anime({ targets: pages.rotation, y: Math.PI*0.75, duration: 900, easing: 'easeInOutQuad' });
+        flashSparkles();
+      }
+      function closeBook(){
+        if (!isOpen) return;
+        isOpen = false;
+        anime({ targets: [frontCover.rotation, pages.rotation], y: 0, duration: 900, easing: 'easeInOutQuad' });
+      }
+      container.addEventListener('click', ()=>{ isOpen ? closeBook() : openBook(); });
+
+      // Drag to rotate
+      const rect = ()=> container.getBoundingClientRect();
+      container.addEventListener('pointerdown', (e)=>{ drag = true; prev.x=e.clientX; prev.y=e.clientY; container.setPointerCapture(e.pointerId); hint.style.display='none'; });
+      container.addEventListener('pointermove', (e)=>{
+        if(!drag) return; const dx = (e.clientX - prev.x)/rect().width; const dy = (e.clientY - prev.y)/rect().height; prev.x=e.clientX; prev.y=e.clientY; book.rotation.y += dx*2.8; book.rotation.x += dy*2.0; book.rotation.x = Math.max(-1.0, Math.min(0.4, book.rotation.x)); });
+      container.addEventListener('pointerup', ()=>{ drag=false; });
+
+      // Scroll progress subtly flips pages
+      const onScroll = () => {
+        const r = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight*0.8)));
+        pages.rotation.y = (isOpen? Math.PI*0.75 : 0) + r*0.2;
+      };
+      window.addEventListener('scroll', onScroll);
+
+      // Sparkle effect on open
+      function flashSparkles(){
+        const p = new THREE.Group();
+        const N = 32; const geo = new THREE.SphereGeometry(0.01, 6, 6);
+        for(let i=0;i<N;i++){
+          const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0xffd27a }));
+          const a = Math.random()*Math.PI*2; const r = Math.random()*0.6+0.2; m.position.set(Math.cos(a)*r, (Math.random()-0.5)*0.4, Math.sin(a)*r);
+          p.add(m);
+        }
+        p.position.set(0.2,0.2,0.1); book.add(p);
+        anime({ targets: p.children.map(c=>c.position), x: (el,i)=>el.x*1.6, y:(el,i)=>el.y*1.6, z:(el,i)=>el.z*1.6, duration: 700, easing: 'easeOutQuad', complete: ()=>{ book.remove(p); }});
+      }
+
+      // Reveal animations for content
+      const revealSections = document.querySelectorAll('.reveal');
+      const io = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting){
+        anime({ targets: e.target.querySelectorAll('.card, ul>li, ol>li, .faq dt, .faq dd, p'), translateY: [24,0], opacity: [0,1], easing: 'easeOutQuad', duration: 600, delay: anime.stagger(70) });
+        io.unobserve(e.target);
+      }}); }, { threshold: .25 });
+      revealSections.forEach(s=> io.observe(s));
+
+      // Animation loop
+      const dAttr = dust.geometry.attributes.position;
+      function tick(){
+        // Ambient dust
+        for(let i=0;i<dAttr.count;i++){
+          const y = dAttr.getY(i) + 0.0008 + Math.random()*0.0008;
+          dAttr.setY(i, y > 1 ? -1 : y);
+        }
+        dAttr.needsUpdate = true;
+        renderer.render(scene, camera);
+        requestAnimationFrame(tick);
+      }
+      tick();
+
+      function onResize(){
+        const s = getSize(); renderer.setSize(s.w, s.h, false); camera.aspect = s.w / s.h; camera.updateProjectionMatrix();
+      }
+      window.addEventListener('resize', onResize);
+    });
+  </script>
+</body>
+</html>
