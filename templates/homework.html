@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}HomeNote{% endblock %}
+{% block content %}
+<body>
+
+<div class="homework-dark-theme">
+    <main>
+        <div class="hw-box">
+            <!-- Homework info block -->
+            <div class="hw-info">
+                <h2>Assignment Title: <span id="hw-title" style="color: white;">{{ homework.title }}</span></h2>
+                <p><strong>Teacher:</strong> <span id="hw-teacher">{{ homework.teacher }}</span></p>
+                <p><strong>Subject:</strong> <span id="hw-subject">{{ homework.subject}}</span></p>
+                <p><strong>Due Date:</strong> <span id="hw-deadline">NOTHING</span></p>
+            </div>
+
+            <h3 class="orange-text" style="margin-top: 20px;">Intro:</h3>
+            <p><h2 id="hw-title" style="margin-left: 10px;"></h2><strong>{{ homework.intro }}</strong></p>
+        <div class="hw-box">
+            <h3 class="orange-text" style="margin-top: 20px;">Homework</h3>
+            <div class="hw-info" style="margin-bottom: 20px;">
+                <strong>{{ homework.text }}</strong>
+            </div>
+
+            <!-- Список файлов -->
+            {% if homework.files %}
+            <h3 class="orange-text" style="margin-bottom: 10px;">Files:</h3>
+            <ul style="list-style-type: none; padding-left: 0;">
+                {% for file in homework.files %}
+                <li style="margin-bottom: 10px;">
+                    {{ file }}
+                    <a href="{{ url_for('download_file', filename=file) }}" 
+                       class="btn"
+                       style="background-color: var(--accent-color); color: #000; padding: 0.5em 1em; border-radius: 6px; font-weight: 500; text-decoration: none; transition: background 0.3s, transform 0.2s;">
+                        Download
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+        </div>
+    </main>
+</div>
+</div>
+</body>
+{% endblock %}

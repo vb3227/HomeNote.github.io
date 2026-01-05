@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HomeNote | Streamlined Solutions</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+  <header class="navbar">
+    {% if loged == None %}
+      <a href="/" class="logo">HomeNote</a>
+    {% else %}
+      <a href="/profile" class="logo">HomeNote</a>
+    {% endif %}
+    <nav class="nav-links">
+      <a href="{{ url_for('index') }}#features">Features</a>
+      <a href="{{ url_for('index') }}#how-it-works">How It Works</a>
+      <a href="{{ url_for('index') }}#testimonials">Testimonials</a>
+      <a href="#contact">Contact</a>
+      {% if loged == None %}
+        <button class="login-btn" onclick="location.href='login'">Login/Sign up</button>
+      {% else %}
+        <button class="login-btn" onclick="location.href='profile'">Profile</button>
+      {% endif %}
+      <button class="theme-toggle-btn" id="theme-toggle-btn" title="Toggle theme">🌙</button>
+    </nav>
+  </header>
+
+
+  <section class="hero" id="hero">
+    <h1>Streamlined Solutions for Smarter Learning & School Management</h1>
+    <p>
+      HomeNote empowers educators, administrators, students, and parents with a unified platform:
+      note-taking, task management, curriculum planning, analytics and real-time collaboration —
+      everything you need to boost efficiency and engagement.
+    </p>
+    <div class="cta-buttons">
+      <button onclick="location.href='signup'">Get Started</button>
+    </div>
+  </section>
+
+  <!-- ================ FEATURES ================= -->
+  <section class="features" id="features">
+    <h2>Key Features</h2>
+    <div class="features-grid">
+      <!-- 1 -->
+      <div class="feature-card">
+        <div class="feature-icon">👩‍🏫</div>
+        <div class="feature-content">
+          <h3>Streamlined Workflow</h3>
+          <p>
+            Ditch patchwork solutions: centralize notes, tasks, and schedules in one intuitive interface
+            to save time and reduce errors.
+          </p>
+        </div>
+      </div>
+      <!-- 2 -->
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-content">
+          <h3>Community Engagement</h3>
+          <p>
+            From announcements to progress tracking: keep students, parents, and staff connected
+            via real-time updates and messaging.
+          </p>
+        </div>
+      </div>
+      <!-- 3 -->
+      <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <div class="feature-content">
+          <h3>Curriculum & Lesson Planning</h3>
+          <p>
+            Manage your teaching journey—from curriculum design to lesson notes and report cards—
+            all within a single platform.
+          </p>
+        </div>
+      </div>
+      <!-- 4 -->
+      <div class="feature-card">
+        <div class="feature-icon">⚙️</div>
+        <div class="feature-content">
+          <h3>Customizable & Scalable</h3>
+          <p>
+            Tailor features to your institution’s needs: permissions, modules, and themes adapt
+            to any size or teaching style.
+          </p>
+        </div>
+      </div>
+      <!-- 5 -->
+      <div class="feature-card">
+        <div class="feature-icon">📚</div>
+        <div class="feature-content">
+          <h3>Comprehensive Curriculum Catalog</h3>
+          <p>
+            Leverage an extensive library of standards-aligned materials: simplify multi-curricula delivery
+            and ensure compliance.
+          </p>
+        </div>
+      </div>
+      <!-- 6 -->
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <div class="feature-content">
+          <h3>Onboarding & Support</h3>
+          <p>
+            Dedicated implementation and ongoing assistance: get up and running quickly with minimal downtime,
+            backed by expert guidance.
+          </p>
+        </div>
+      </div>
+      <!-- 7 -->
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-content">
+          <h3>Secure Data & Privacy</h3>
+          <p>
+            Enterprise-grade encryption and role-based access: your data is protected and compliant
+            with privacy regulations.
+          </p>
+        </div>
+      </div>
+      <!-- 8 -->
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-content">
+          <h3>Analytics & Insights</h3>
+          <p>
+            Track engagement, performance metrics, and usage trends via dashboards to make data-driven decisions.
+          </p>
+        </div>
+      </div>
+      <!-- 9 -->
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <div class="feature-content">
+          <h3>Mobile Access</h3>
+          <p>
+            Access notes, assignments, and announcements on the go via responsive web and mobile-friendly interface.
+          </p>
+        </div>
+      </div>
+      <!-- 10 -->
+      <div class="feature-card">
+        <div class="feature-icon">🤝</div>
+        <div class="feature-content">
+          <h3>Collaboration in Real-Time</h3>
+          <p>
+            Work on group projects, share resources, and co-edit documents simultaneously, boosting teamwork.
+          </p>
+        </div>
+      </div>
+      <!-- 11 -->
+      <div class="feature-card">
+        <div class="feature-icon">🔔</div>
+        <div class="feature-content">
+          <h3>Notifications & Reminders</h3>
+          <p>
+            Automatic alerts for deadlines, events, and new updates ensure no one misses important information.
+          </p>
+        </div>
+      </div>
+      <!-- 12 -->
+      <div class="feature-card">
+        <div class="feature-icon">💡</div>
+        <div class="feature-content">
+          <h3>Innovative Tools</h3>
+          <p>
+            Integrated brainstorming boards, mind maps, and resource repositories to foster creativity
+            and deeper learning.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================ HOW IT WORKS ================= -->
+  <section class="how-it-works" id="how-it-works">
+    <h2>How It Works</h2>
+    <p>Getting started with HomeNote is simple:</p>
+    <ol>
+      <li>Sign up and create your institution’s workspace in minutes.</li>
+      <li>Invite teachers, staff, students, and parents via secure links.</li>
+      <li>Configure modules: notes, tasks, curriculum, analytics, messaging, etc.</li>
+      <li>Start creating classes, lessons, assignments, and set deadlines.</li>
+      <li>Collaborate in real-time: share resources, co-edit documents, track progress.</li>
+      <li>Monitor dashboards: engagement stats, completion rates, performance insights.</li>
+      <li>Iterate and improve: adjust plans based on analytics and feedback.</li>
+    </ol>
+    <p>
+      All in one unified platform—no separate tools required. Focus on teaching and learning, мы handle the rest.
+    </p>
+  </section>
+
+  <!-- ================ TESTIMONIALS ================= -->
+  <section class="testimonials" id="testimonials">
+    <h2>What Our Users Say</h2>
+    <div class="testimonial-cards">
+      <div class="testimonial-card">
+        <p>"HomeNote has revolutionized how our school plans curriculum and communicates with parents.
+          The analytics dashboard helps us spot trends early."</p>
+        <div class="author">— Alex Johnson, Principal at Riverside High</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"As a teacher, I love the integrated lesson planner and real-time collaboration features.
+          My students stay engaged and organized."</p>
+        <div class="author">— Maria Garcia, 9th Grade Teacher</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"Our district rolled this out across 10 schools. The onboarding was smooth, support is excellent,
+          and data security gives us peace of mind."</p>
+        <div class="author">— David Lee, IT Director</div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <p>&copy; 2025 HomeNote. All rights reserved.</p>
+    <p>
+      <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+    </p>
+  </footer>
+
+ 
+  <script>
+    (function() {
+      const toggleBtn = document.getElementById('theme-toggle-btn');
+      const root = document.documentElement;
+      const darkIcon = '🌙';
+      const lightIcon = '☀️';
+
+      // function to apply theme
+      function applyTheme(theme) {
+        if (theme === 'dark') {
+          root.setAttribute('data-theme', 'dark');
+          toggleBtn.textContent = lightIcon;
+        } else {
+          root.setAttribute('data-theme', 'light');
+          toggleBtn.textContent = darkIcon;
+        }
+      }
+
+      // load saved theme from localStorage or default to system preference
+      let savedTheme = localStorage.getItem('theme');
+      if (savedTheme !== 'light' && savedTheme !== 'dark') {
+        // no saved — detect OS preference
+        const mql = window.matchMedia('(prefers-color-scheme: dark)');
+        savedTheme = mql.matches ? 'dark' : 'light';
+      }
+      applyTheme(savedTheme);
+
+      // toggle on button click
+      toggleBtn.addEventListener('click', function() {
+        const current = root.getAttribute('data-theme');
+        const newTheme = (current === 'dark') ? 'light' : 'dark';
+        applyTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+      });
+    })();
+  </script>
+</body>
+</html>

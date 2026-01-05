@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}HomeNote{% endblock %}
+
+{% block content %}
+
+{% set student_homework = [] %}
+{% set subjects_list = [] %}
+
+{% if user.role == "teacher" %}
+    {% for hw in all_homework %}
+        {% if hw.grade | replace(gtt, "") not in subjects_list %}
+            {% set _ = subjects_list.append(hw.grade | replace(gtt, "")) %}
+        {% endif %}
+    {% endfor %}
+{% else %}
+    {% for h in all_homework %}
+        {% if user.classes and (h.grade in user.classes) %}
+            {% set _ = student_homework.append(h) %}
+        {% endif %}
+    {% endfor %}
+
+    {% for h in student_homework %}
+        {% if h.subject not in subjects_list %}
+            {% set _ = subjects_list.append(h.subject) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+
+
+<!-- Весь контент в одном Flex -->
+<div class="wrapper" style="display: flex; gap: 2rem; align-items: flex-start;">
+
+    <!-- Левый контейнер Subjects -->
+    <div class="left-box" style="
+        margin-top: 20px;
+        margin-left: 20px;
+        position: sticky;
+        width: 200px;
+        background: #303030;
+        padding: 1rem;
+        border-radius: 10px;
+        color: white;
+        flex-shrink: 0;
+    ">
+        <h3>Classes</h3>
+
+        {% for s in subjects_list %}
+        <section style="margin-top: 10px;">
+            <button onclick="location.href='/info/{{ s }}';" class="subject-btn">{{ s }}</button>
+        </section>
+        {% endfor %}
+    </div>
+
+
+    <!-- Основной блок Homework -->
+    <div class="custom-page" style="flex: 1;">
+        <section class="container">
+            <h1 class="page-title">Homework</h1>
+
+            <div class="cards" id="card-container">
+
+                    {% if homework|length == 0 %}
+                        <div class="no-homework" style="text-align:center; padding:2rem; margin-top:2rem;">
+                            <h2>No homework available</h2>
+                            <p>You currently have no assigned homework. Please check back later.</p>
+                        </div>
+                    {% else %}
+                        {% for h in homework %}
+                        <article class="card">
+                            <div class="card-header">
+                                <h2>Title: <span style="color: white;">{{ h.title }}</span></h2>
+                                <p>Introduction: <span style="color: white;">{{ h.intro }}</span></p>
+                                <p>Subject: <span style="color: white;">{{ h.subject }}</span></p>
+                            </div>
+                            <div class="card-body">
+                                <button onclick="location.href='/info/{{ h.id }}';" class="btn">Details</button>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    {% endif %}
+
+
+            </div>
+
+            <div id="loading" style="text-align:center; margin-top: 2rem; color: #ff7f00; display:none;">
+                Loading...
+            </div>
+
+        </section>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+  let page = 1;
+  let loading = false;
+
+  async function loadMoreHomework() {
+    if (loading) return;
+    loading = true;
+    document.getElementById('loading').style.display = 'block';
+
+    try {
+      const response = await fetch(`/load_more?page=${++page}`);
+      const html = await response.text();
+      const temp = document.createElement('div');
+      temp.innerHTML = html;
+
+      const newCards = temp.querySelectorAll('.card');
+      const container = document.getElementById('card-container');
+      newCards.forEach(card => container.appendChild(card));
+
+      if (newCards.length === 0) {
+        window.removeEventListener('scroll', handleScroll);
+      }
+
+    } catch (error) {
+      console.error('Load error:', error);
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    loading = false;
+  }
+
+  function handleScroll() {
+    const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 300;
+    if (nearBottom) {
+      loadMoreHomework();
+    }
+  }
+
+  window.addEventListener('scroll', handleScroll);
+</script>
+{% endblock %}

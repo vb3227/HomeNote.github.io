@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Profile - {{ user.user_name }}{% endblock %}
+
+{% block content %}
+<body>
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- Hero / Header for Profile -->
+    <section class="hero">
+      <h1>Welcome, {{ user.user_name }}!</h1>
+      <p>Manage your profile information below.</p>
+    </section>
+
+    <!-- Profile Info Section -->
+    <section class="about">
+      <h2>Your Profile</h2>
+      <div class="features-grid" style="max-width: 600px; margin: 0 auto;">
+        <div class="feature-card" style="flex-direction: column; align-items: center; text-align: center;">
+          <!-- Placeholder avatar circle with initial "U" -->
+          <div style="
+            width: 100px; height: 100px; 
+            border-radius: 50%; 
+            background-color: var(--box-shadow-light); 
+            margin-bottom: 15px; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 2rem; color: var(--nav-text);
+          ">
+            U
+          </div>
+          <div class="feature-content" style="width: 100%;">
+            <h3>{{ user.user_name }}</h3>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Role:</strong> {{ user.role }}</p>
+            <p><strong>Member since:</strong> {{ user.created_at }}</p>
+          </div>
+
+          <!-- Compact Logout Button -->
+          <a href="/logout"
+             class="logout-btn"
+             style="
+               display: inline-block;
+               padding: 10px 20px;
+               background: #ff7900;
+               color: var(--nav-text);
+               border-radius: 8px;
+               text-decoration: none;
+               font-weight: 600;
+               margin-top: 20px;
+               box-shadow: var(--box-shadow);
+             ">
+            Logout
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Update Profile Form Section -->
+    <section class="about">
+      <h2>Update Profile</h2>
+      <div style="max-width: 500px; margin: 0 auto;">
+        <!-- No action attribute, so form does nothing by default -->
+        <form class="profile-update-form">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" value="{{ user.user_name }}" readonly>
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" value="{{ user.email }}" readonly>
+
+          <label for="password">New Password</label>
+          <input type="password" id="password" name="password" placeholder="Leave blank to keep current">
+
+          <label for="password2">Confirm New Password</label>
+          <input type="password" id="password2" name="password2" placeholder="Leave blank to keep current">
+
+          <!-- Button with no action/href -->
+          <button class="btn-submit" type="button">Save Changes</button>
+        </form>
+      </div>
+    </section>
+  </main>
+{% endblock %}
+
+  <!-- JS: Theme toggle and footer year -->
+  <script>
+    (function() {
+      // Theme toggle logic
+      const toggleBtn = document.getElementById('theme-toggle');
+      const root = document.documentElement;
+      // On load: check saved theme
+      let saved = localStorage.getItem('theme');
+      if (saved === 'dark' || saved === 'light') {
+        root.setAttribute('data-theme', saved);
+      } else {
+        const mql = window.matchMedia('(prefers-color-scheme: dark)');
+        root.setAttribute('data-theme', mql.matches ? 'dark' : 'light');
+      }
+      function updateIcon(theme) {
+        toggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+      }
+      updateIcon(root.getAttribute('data-theme'));
+
+      toggleBtn.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateIcon(next);
+      });
+
+      const yearSpan = document.getElementById('year');
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+      }
+    })();
+  </script>
+</body>
+</html>

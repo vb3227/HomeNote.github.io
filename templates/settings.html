@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Settings — HomeNote{% endblock %}
+
+{% block content %}
+<div class="custom-form-page" style="max-width: 700px; margin: 2rem auto;">
+    <h1 class="form-title">Settings</h1>
+
+    <form action="{{ url_for('settings_page') }}" method="post">
+        <!-- Theme Selection -->
+        <div class="form-group">
+            <label for="theme">Theme:</label>
+            <select name="theme" id="theme">
+                <option value="light" {% if current_theme == 'light' %}selected{% endif %}>Light</option>
+                <option value="dark" {% if current_theme == 'dark' %}selected{% endif %}>Dark</option>
+            </select>
+        </div>
+
+        <!-- Notifications -->
+        <div class="form-group">
+            <label for="notifications">Notifications:</label>
+            <select name="notifications" id="notifications">
+                <option value="enabled" {% if notifications == 'enabled' %}selected{% endif %}>Enabled</option>
+                <option value="disabled" {% if notifications == 'disabled' %}selected{% endif %}>Disabled</option>
+            </select>
+        </div>
+
+        <!-- Default Class/Grade -->
+        <div class="form-group">
+            <label for="default-grade">Default Class/Grade:</label>
+            <select name="default_grade" id="default-grade">
+                {% for el in classes %}
+                    <option value="{{ el.grade }}" {% if el.grade == default_grade %}selected{% endif %}>
+                        {{ el.grade }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Email / Account info -->
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" value="{{ current_email }}">
+        </div>
+
+        <!-- Language Preference -->
+        <div class="form-group">
+            <label for="language">Language:</label>
+            <select name="language" id="language">
+                <option value="en" {% if language == 'en' %}selected{% endif %}>English</option>
+                <option value="ru" {% if language == 'ru' %}selected{% endif %}>Русский</option>
+                <option value="es" {% if language == 'es' %}selected{% endif %}>Español</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-submit">Save Settings</button>
+    </form>
+</div>
+{% endblock %}

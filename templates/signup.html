@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — HomeNote{% endblock %}
+  <!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <!-- Inline CSS for demo; consider moving into static/styles.css -->
+
+{% block content %}
+<div class="auth-page">
+<body>
+  <main>
+    <div class="container">
+      <!-- Flashed messages from Flask -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="flashes">
+            {% for category, message in messages %}
+              <li class="flash {{ category }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <h2>Sign Up</h2>
+      <form id="signup-form" action="{{ url_for('signup') }}" method="POST" novalidate>
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required minlength="6" />
+          <div id="email-error" class="error-message">Email must be at least 6 characters.</div>
+        </div>
+        <!-- Username -->
+        <div class="form-group">
+          <label for="user_name">Username</label>
+          <input type="text" id="user_name" name="user_name" required minlength="3" />
+          <div id="username-error" class="error-message">Username must be at least 3 characters.</div>
+        </div>
+        <!-- Password -->
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required minlength="6" />
+          <div id="password-length-error" class="error-message">Password must be at least 6 characters.</div>
+        </div>
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="password2">Confirm Password</label>
+          <input type="password" id="password2" name="password2" required />
+          <div id="password-match-error" class="error-message">Passwords do not match.</div>
+        </div>
+        <!-- Submit -->
+        <button type="submit" class="btn-submit">Register</button>
+      </form>
+      <div class="login-link">
+        <a href="{{ url_for('login') }}">Already have an account? Log in</a>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+  <!-- JavaScript for client-side validation -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('signup-form');
+      const emailInput = document.getElementById('email');
+      const usernameInput = document.getElementById('user_name');
+      const passwordInput = document.getElementById('password');
+      const password2Input = document.getElementById('password2');
+
+      const emailError = document.getElementById('email-error');
+      const usernameError = document.getElementById('username-error');
+      const passwordLengthError = document.getElementById('password-length-error');
+      const passwordMatchError = document.getElementById('password-match-error');
+
+      // Helper to show/hide error
+      function showError(elem) {
+        elem.style.display = 'block';
+      }
+      function hideError(elem) {
+        elem.style.display = 'none';
+      }
+
+      // Initially hide all error messages
+      [emailError, usernameError, passwordLengthError, passwordMatchError].forEach(hideError);
+
+      form.addEventListener('submit', function(event) {
+        let valid = true;
+
+        // Hide previous
+        [emailError, usernameError, passwordLengthError, passwordMatchError].forEach(hideError);
+
+        // Email length check
+        if (!emailInput.value.trim() || emailInput.value.trim().length < 6) {
+          showError(emailError);
+          valid = false;
+        }
+        // Optionally: more email format checks can be added here
+
+        // Username length check
+        if (!usernameInput.value.trim() || usernameInput.value.trim().length < 3) {
+          showError(usernameError);
+          valid = false;
+        }
+
+        // Password length check
+        if (!passwordInput.value || passwordInput.value.length < 6) {
+          showError(passwordLengthError);
+          valid = false;
+        }
+        // Password match check
+        if (passwordInput.value && password2Input.value && passwordInput.value !== password2Input.value) {
+          showError(passwordMatchError);
+          valid = false;
+        }
+
+        if (!valid) {
+          event.preventDefault();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

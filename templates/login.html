@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% block title %}Login — HomeNote{% endblock %}
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
+</head>
+
+{% block content %}
+<body>
+
+  <div class="container">
+    <form id="loginForm" action="" method="POST">
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="flashes">
+            {% for category, message in messages %}
+              <li class="flash {{ category }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <h2>Login</h2>
+      <div class="form-group">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" name="email" required />
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" name="password" required />
+      </div>
+
+      <div class="remember-group">
+        <input type="checkbox" id="remember" name="remainme" />
+        <label for="remember">Remember me</label>
+      </div>
+
+      <button type="submit" class="btn-submit">Login</button>
+      <div class="toggle">
+        Don't have an account? <a href="/signup">Sign up</a>
+      </div>
+    </form>
+  </div>
+
+
+</body>
+{% endblock %}
+</html>

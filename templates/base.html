@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}HomeNote | Streamlined Solutions{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+  <!-- Добавляем нужные стили для фиксированного футера -->
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    main {
+      flex: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ================ NAVBAR ================ -->
+  <header class="navbar">
+    <div class="left-section">
+      {% if loged == None %}
+        <a href="/" class="logo">HomeNote</a>
+      {% else %}
+        <a href="/profile" class="logo">HomeNote</a>
+      {% endif %}
+      <a href="{{ url_for('index') }}" class="about-btn">About us</a>
+    </div>
+
+    <nav class="nav-links">
+      {% if loged == None %}
+        <button class="login-btn" onclick="location.href='login'">Login/Sign up</button>
+      {% endif %}
+
+      {% if loged == "student" %}
+        <a href="/info">My homework</a>
+        <button class="login-btn" onclick="location.href='/profile'">Profile</button>
+      {% endif %}
+
+      {% if loged == "teacher" %}
+        <a href="/Classes">My classes</a>
+        <a href="{{ url_for('create') }}">Create homework</a>
+        <a href="/info">Existing homeworks</a>
+        <button class="login-btn" onclick="location.href='/profile'">Profile</button>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- ================ MAIN CONTENT ================ -->
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- ================ FOOTER ================= -->
+  <footer>
+    <p>&copy; 2025 HomeNote. All rights reserved.</p>
+    <p>
+      <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
+    </p>
+  </footer>
+
+  <!-- ================ Theme Toggle Script ================= -->
+  <script>
+    (function() {
+      const toggleBtn = document.getElementById('theme-toggle-btn');
+      const root = document.documentElement;
+      const darkIcon = '🌙';
+      const lightIcon = '☀️';
+
+      function applyTheme(theme) {
+        if (theme === 'dark') {
+          root.setAttribute('data-theme', 'dark');
+          toggleBtn.textContent = lightIcon;
+        } else {
+          root.setAttribute('data-theme', 'light');
+          toggleBtn.textContent = darkIcon;
+        }
+      }
+
+      let savedTheme = localStorage.getItem('theme');
+      if (savedTheme !== 'light' && savedTheme !== 'dark') {
+        const mql = window.matchMedia('(prefers-color-scheme: dark)');
+        savedTheme = mql.matches ? 'dark' : 'light';
+      }
+      applyTheme(savedTheme);
+
+      toggleBtn.addEventListener('click', function() {
+        const current = root.getAttribute('data-theme');
+        const newTheme = (current === 'dark') ? 'light' : 'dark';
+        applyTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+      });
+    })();
+  </script>
+</body>
+</html>

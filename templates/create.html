@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Create Article — HomeNote{% endblock %}
+
+{% block content %}
+<div class="custom-form-page">
+    <h1 class="form-title">Create a New Article</h1>
+
+    <form action="{{ url_for('create') }}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title" required>
+        </div>
+
+        <div class="form-group">
+            <label for="intro">Intro</label>
+            <textarea name="intro" id="intro" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="text">Full Text</label>
+            <textarea name="text" id="text" required></textarea>
+
+            <!-- Кнопка для выбора файлов -->
+            <button type="button" class="button" onclick="document.getElementById('fileInput').click()">Upload Files</button>
+
+            <!-- Скрытое поле выбора файлов -->
+            <input type="file" id="fileInput" multiple style="display:none" onchange="filesSelected(event)">
+
+            <!-- Список выбранных файлов -->
+            <div id="fileList" style="margin-top: 10px; color: #ff7f00; font-weight: bold;"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="grade">Grade</label>
+            <select name="grade" id="grade" required>
+                <option value="" disabled selected>Select your class</option>
+                {% for el in classes %}
+                    <option value="{{ el.grade }}">{{ el.grade | replace(gtt, "") }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="subject">Subject</label>
+            <input type="text" name="subject" id="subject" required>
+        </div>
+
+        <button type="submit" class="btn-submit">Create</button>
+    </form>
+</div>
+
+<script>
+let selectedFiles = []; // массив выбранных файлов
+
+function filesSelected(event) {
+    const files = Array.from(event.target.files); // новые выбранные файлы
+
+    // добавляем новые файлы в массив, избегая дубликатов
+    files.forEach(f => {
+        if (!selectedFiles.some(file => file.name === f.name && file.size === f.size)) {
+            selectedFiles.push(f);
+        }
+    });
+
+    // обновляем отображение
+    const listDiv = document.getElementById('fileList');
+    if (selectedFiles.length === 0) {
+        listDiv.innerHTML = "";
+        return;
+    }
+
+    let html = "Selected files:<br>";
+    selectedFiles.forEach((f, idx) => {
+        html += `• ${f.name} <button type="button" onclick="removeFile(${idx})">Remove</button><br>`;
+    });
+    listDiv.innerHTML = html;
+
+    // очищаем input, чтобы можно было выбрать новые файлы
+    event.target.value = "";
+}
+
+function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    filesSelected({ target: { files: [] } }); // обновляем отображение
+}
+
+// перед отправкой формы создаём временные input для всех выбранных файлов
+document.querySelector("form").addEventListener("submit", function(e) {
+    const form = e.target;
+    selectedFiles.forEach(f => {
+        const container = new DataTransfer();
+        container.items.add(f);
+        const input = document.createElement("input");
+        input.type = "file";
+        input.name = "files";
+        input.files = container.files;
+        input.style.display = "none";
+        form.appendChild(input);
+    });
+});
+</script>
+{% endblock %}

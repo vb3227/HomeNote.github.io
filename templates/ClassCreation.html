@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Students to Class</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    /* --- Сброс базовых стилей и box-sizing --- */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+    *, *::before, *::after {
+      box-sizing: inherit;
+    }
+
+    .student-select-form label {
+      margin-top: 10px;
+      display: block;
+      color: var(--nav-text);
+    }
+    .student-select-form input[type="text"] {
+      width: 100%;
+      margin-bottom: 10px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      border: 1px solid var(--input-border);
+      border-radius: 4px;
+      padding: 8px;
+    }
+    .student-select-form button[type="submit"],
+    .student-select-form button[type="button"].add-btn {
+      width: 100%;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: var(--accent-color);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .student-select-form button[type="submit"]:hover,
+    .student-select-form button[type="button"].add-btn:hover {
+      background-color: var(--accent-hover);
+    }
+
+    /* --- Список добавленных студентов --- */
+    .added-student-list .added-student {
+      margin-top: 5px;
+      background: var(--card-bg);
+      padding: 5px 10px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-color);
+      position: relative;
+    }
+    .added-student-list .added-student .student-name {
+      /* если нужно, можно добавить обрезку или перенос */
+      word-break: break-word;
+    }
+    .added-student-list .added-student .remove-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font-size: 1.2em;      /* размер крестика; подкорректируйте по вкусу */
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-color);
+    }
+    .added-student-list .added-student .remove-btn:hover {
+      color: #c00;
+    }
+    .added-student-list .added-student .remove-btn:focus {
+      outline: 1px dotted #444;
+      outline-offset: 2px;
+    }
+
+    /* --- Стили автодополнения --- */
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .input-wrapper input {
+      width: 100%;
+      padding-right: 2rem; /* резерв для кнопки очистки */
+    }
+    .clear-btn {
+      position: absolute;
+      right: 8px;               /* расстояние от правого края wrapper */
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: none;            /* показывается, когда есть текст */
+      color: var(--accent-color);
+      padding: 0;
+      line-height: 1;
+    }
+    .clear-btn:hover {
+      color: var(--accent-hover-text, #000);
+    }
+    .autocomplete-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      max-height: 150px;
+      overflow-y: auto;
+      background-color: #f75200; /* или var(--...) */
+      border: 1px solid #cccccc;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      box-shadow: 0 4px 8px rgba(164, 89, 4, 0.4);
+      z-index: 1000;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .autocomplete-list li {
+      padding: 8px 12px;
+      cursor: pointer;
+      color: #010000;
+    }
+    .autocomplete-list li:hover {
+      background-color: #e70000;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="left-section">
+      {% if loged == None %}
+        <a href="/" class="logo">HomeNote</a>
+      {% else %}
+        <a href="/profile" class="logo">HomeNote</a>
+      {% endif %}
+      <a href="{{ url_for('index') }}" class="about-btn">About us</a>
+    </div>
+    <nav class="nav-links">
+      {% if loged == None %}
+        <button class="login-btn" onclick="location.href='login'">Login/Sign up</button>
+      {% endif %}
+      {% if loged == "student" %}
+        <a href="/info">My homework</a>
+        <a href="/settings">⚙️</a>
+      {% endif %}
+      {% if loged == "teacher" %}
+        <a href="/Classes">My classes</a>
+        <a href="{{ url_for('create') }}">Create homework</a>
+        <a href="/info">Existing homeworks</a>
+        <button class="login-btn" onclick="location.href='profile'">Profile</button>
+        <a onclick="location.href='profile'">⚙️</a>
+      {% endif %}
+      <!-- Кнопка переключения темы -->
+      <button id="theme-toggle" class="theme-toggle-btn" title="Toggle theme">🌙</button>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <section class="hero">
+      <h1>Add Students to a Class</h1>
+      <p>Create a new class or add students to an existing one.</p>
+    </section>
+
+    <!-- Form -->
+    <section class="about">
+      <div style="max-width: 400px; margin: 0 auto;">
+        <form class="student-select-form" action="{{ url_for('CreateClass') }}" method="POST" novalidate>
+          <label for="className">Class Name</label>
+          <input type="text" id="className" name="class_name" placeholder="Enter class name" required>
+
+          <label for="studentSearch">Search Student</label>
+          <div class="input-wrapper">
+            <input type="text" id="studentSearch" autocomplete="off" placeholder="Type to search">
+            <!-- Кнопка очистки поля -->
+            <button type="button" id="clearBtn" class="clear-btn" onclick="clearStudentSearch()" aria-label="Clear">&times;</button>
+            <ul id="autocompleteList" class="autocomplete-list"></ul>
+          </div>
+
+          <input type="hidden" id="studentDropdown" name="USER">
+
+          <!-- Кнопка добавления одного студента -->
+          <button type="button" class="add-btn" onclick="addStudent()">Add Student</button>
+          <!-- Список добавленных студентов -->
+          <div id="addedStudents" class="added-student-list"></div>
+          <!-- Скрытые инпуты для отправки -->
+          <div id="hiddenInputs"></div>
+
+          <button type="submit">Create / Add to Class</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; <span id="year"></span> HomeNote. All rights reserved.</p>
+    <p>
+      <button type="button" style="background:none;border:none;color:var(--accent-color);cursor:pointer;">Privacy Policy</button>
+      |
+      <button type="button" style="background:none;border:none;color:var(--accent-color);cursor:pointer;">Terms of Service</button>
+    </p>
+  </footer>
+
+  <!-- Data + Script -->
+  <script type="application/json" id="students-data">{{ students | tojson }}</script>
+  <script>
+    (function () {
+      // Theme toggle
+      const toggleBtn = document.getElementById('theme-toggle');
+      const root = document.documentElement;
+      if (toggleBtn) {
+        let theme = localStorage.getItem('theme');
+        if (!theme) {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.setAttribute('data-theme', theme);
+        toggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+        toggleBtn.onclick = () => {
+          theme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', theme);
+          localStorage.setItem('theme', theme);
+          toggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+        };
+      }
+
+      // Парсим данные студентов из JSON в теге
+      let students = [];
+      try {
+        const raw = document.getElementById('students-data').textContent;
+        students = JSON.parse(raw) || [];
+      } catch (e) {
+        console.error("Ошибка парсинга students-data:", e);
+      }
+
+      // Ссылки на элементы
+      const searchInput = document.getElementById('studentSearch');
+      const hiddenInput = document.getElementById('studentDropdown');
+      const list = document.getElementById('autocompleteList');
+      const addedList = document.getElementById('addedStudents');
+      const hiddenInputs = document.getElementById('hiddenInputs');
+      const clearBtn = document.getElementById('clearBtn');
+
+      if (searchInput) {
+        // Показ/скрытие кнопки очистки
+        searchInput.addEventListener('input', () => {
+          if (clearBtn) {
+            clearBtn.style.display = searchInput.value.trim() ? 'block' : 'none';
+          }
+        });
+
+        // Debounce для ввода
+        function debounce(fn, delay = 200) {
+          let timer = null;
+          return function(...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn.apply(this, args), delay);
+          };
+        }
+
+        // Обработка ввода: заполнение списка автодополнения
+        const handleInput = () => {
+          const q = searchInput.value.toLowerCase().trim();
+          if (list) list.innerHTML = '';
+          if (hiddenInput) hiddenInput.value = '';
+
+          if (!q) return;
+
+          const filtered = students.filter(s =>
+            s.name && s.name.toLowerCase().includes(q)
+          );
+          if (filtered.length === 0) {
+            return;
+          }
+          filtered.forEach(s => {
+            const li = document.createElement('li');
+            li.textContent = s.name;
+            li.dataset.id = s.id;
+            li.addEventListener('click', () => {
+              searchInput.value = s.name;
+              if (hiddenInput) hiddenInput.value = s.id;
+              if (list) list.innerHTML = '';
+              if (clearBtn) clearBtn.style.display = searchInput.value.trim() ? 'block' : 'none';
+            });
+            if (list) list.appendChild(li);
+          });
+        };
+        searchInput.addEventListener('input', debounce(handleInput, 200));
+
+        // Keydown: Enter/Tab при одном варианте
+        searchInput.addEventListener('keydown', (e) => {
+          if (!list) return;
+          const items = list.children;
+          if ((e.key === 'Enter' || e.key === 'Tab') && items.length === 1) {
+            e.preventDefault();
+            const li = items[0];
+            searchInput.value = li.textContent;
+            if (hiddenInput) hiddenInput.value = li.dataset.id;
+            list.innerHTML = '';
+            if (clearBtn) clearBtn.style.display = searchInput.value.trim() ? 'block' : 'none';
+          }
+        });
+
+        // Скрыть список при клике вне
+        document.addEventListener('click', e => {
+          if (searchInput && list && !searchInput.contains(e.target) && !list.contains(e.target) && e.target !== clearBtn) {
+            list.innerHTML = '';
+          }
+        });
+      }
+
+      // Функция очистки поля поиска
+      window.clearStudentSearch = function () {
+        if (searchInput) searchInput.value = '';
+        if (hiddenInput) hiddenInput.value = '';
+        if (list) list.innerHTML = '';
+        if (clearBtn) clearBtn.style.display = 'none';
+        if (searchInput) searchInput.focus();
+      };
+
+      // Добавление студента
+      window.addStudent = function () {
+        if (!searchInput || !hiddenInput || !addedList || !hiddenInputs) return;
+        const id = hiddenInput.value;
+        const name = searchInput.value.trim();
+        if (!id || !name) {
+          alert('Please select a student from the list.');
+          return;
+        }
+        // Проверяем, что такого id ещё нет в списке
+        if ([...addedList.children].some(div => div.dataset.id === id)) {
+          alert('Student already added.');
+          return;
+        }
+        // Создаём контейнер для добавленного студента
+        const div = document.createElement('div');
+        div.className = 'added-student';
+        div.dataset.id = id;
+        // Упрощённая разметка: span + кнопка
+        div.innerHTML = `
+          <span class="student-name">${name}</span>
+          <button type="button" class="remove-btn" onclick="removeStudent(this,'${id}')" aria-label="Remove ${name}">&times;</button>
+        `;
+        addedList.appendChild(div);
+
+        // Создаём соответствующий скрытый input для отправки формы
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'students[]';
+        input.value = id;
+        input.dataset.id = id;
+        hiddenInputs.appendChild(input);
+
+        // Очистить поле после добавления
+        clearStudentSearch();
+      };
+
+      // Удаление студента
+      window.removeStudent = function (btn, id) {
+        // Удаляем внешний контейнер .added-student
+        const entry = btn.closest('.added-student');
+        if (entry) {
+          entry.remove();
+        }
+        // Удаляем скрытый input
+        if (hiddenInputs) {
+          const input = hiddenInputs.querySelector(`input[data-id="${id}"]`);
+          if (input) input.remove();
+        }
+      };
+
+      // Установка года в футере
+      const yearSpan = document.getElementById('year');
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+      }
+    })();
+  </script>
+</body>
+</html>
